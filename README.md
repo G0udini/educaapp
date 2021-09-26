@@ -1,0 +1,3 @@
+# educaapp
+History of the project:
+...
