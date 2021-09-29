@@ -31,10 +31,10 @@ class StudentEnrollCourseView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         self.course = form.cleaned_data["course"]
         self.course.students.add(self.request.user)
-        return super().form_valid
+        return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("students_course_detail", args=[self.course.id])
+        return reverse_lazy("student_course_detail", args=[self.course.id])
 
 
 class StudentCourseListView(LoginRequiredMixin, ListView):
@@ -43,8 +43,7 @@ class StudentCourseListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        print(self.request.user) # to delete
-        return qs.filter(students__in=[self.request.user])
+        return qs.filter(students=self.request.user)
 
 
 class StudentCourseDetailView(DetailView):
@@ -53,13 +52,11 @@ class StudentCourseDetailView(DetailView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(students__in=[self.request.user])
+        return qs.filter(students=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         course = self.get_object()
         if "module_id" in self.kwargs:
             context["module"] = course.modules.get(id=self.kwargs["module_id"])
-        else:
-            context["module"] = course.models.all()[0]
         return context
