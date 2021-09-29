@@ -1,3 +1,4 @@
+from django.urls import reverse_lazy
 from pathlib import Path
 import os
 
@@ -26,8 +27,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # third apps
+    # apps
     "courses.apps.CoursesConfig",
+    "students.apps.StudentsConfig",
+    # third packages
+    "embed_video",
 ]
 
 MIDDLEWARE = [
@@ -114,3 +118,8 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGIN_REDIRECT_URL = reverse_lazy("student_course_list")
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")

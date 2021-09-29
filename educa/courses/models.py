@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from .fields import OrderField
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 
 
 class Subject(models.Model):
@@ -23,7 +25,7 @@ class Course(models.Model):
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name="courses"
     )
-
+    students = models.ManyToManyField(User, related_name="courses_joined", blank=True)
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     overview = models.TextField()
@@ -64,6 +66,11 @@ class Content(models.Model):
 
     class Meta:
         ordering = ["order"]
+
+    def render(self):
+        return render_to_string(
+            f"courses/content/{self._meta.model_name}.html", {"item": self}
+        )
 
 
 class ItemBase(models.Model):
